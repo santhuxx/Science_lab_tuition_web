@@ -26,10 +26,7 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
+    // Create new user without manually hashing the password
     const newUser = new User({
       fullName,
       grade,
@@ -39,14 +36,14 @@ router.post("/signup", async (req, res) => {
       address,
       parentMobile,
       email,
-      password: hashedPassword, // Store hashed password
+      password, // Password will be hashed by the pre-save hook
     });
 
     await newUser.save();
 
     // Generate JWT token
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1min",
+      expiresIn: "1h", // Changed to 1 hour for better usability
     });
 
     res.status(201).json({ message: "User registered successfully", token });
@@ -63,23 +60,27 @@ router.post("/login", async (req, res) => {
       // Find the user by email
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "User not found" });
+        return res.status(400).json({ message: "Invalid credentials" });
       }
   
-      // Check if the entered password matches the stored hashed password
+      // Check password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
   
-      // Create a JWT token with user details (user ID and role)
+      // Create JWT token
       const token = jwt.sign(
-        { userId: user._id, role: user.role, fullName: user.fullName, email: user.email },
-        process.env.JWT_SECRET, // Secret key stored in environment variables
-        { expiresIn: "1min" } // Token expires in 1 hour
+        { 
+          userId: user._id, 
+          role: user.role, 
+          fullName: user.fullName, 
+          email: user.email 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
       );
   
-      // Respond with token and user details
       res.json({
         token,
         user: {
@@ -92,6 +93,6 @@ router.post("/login", async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Server error" });
     }
-  });
+});
 
 module.exports = router;

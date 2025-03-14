@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout, Menu, Button, Input } from "antd";
-import { Avatar } from "antd";
-import { UserOutlined, DashboardOutlined,AppstoreAddOutlined } from "@ant-design/icons";
+import { Layout, Menu, Modal, Form, Input, Button } from "antd";
+import { UserOutlined, DashboardOutlined, AppstoreAddOutlined } from "@ant-design/icons";
+import UserList from "../components/UserList";
+import HeaderSection from "../components/HeaderSection";
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const AdminPanel = () => {
   const [user, setUser] = useState(null);
@@ -14,60 +15,60 @@ const AdminPanel = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [form] = Form.useForm();
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the token exists
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/"); // Redirect to home if no token
+      navigate("/");
       return;
     }
 
-    // Get the user data from localStorage
     const userData = localStorage.getItem("user");
     if (!userData) {
-      navigate("/"); // Redirect if no user data found
+      navigate("/");
       return;
     }
 
-    // Parse user data and check if the role is teacher
     const parsedUserData = JSON.parse(userData);
     if (parsedUserData?.role !== "teacher") {
-      navigate("/"); // Redirect if user is not a teacher
+      navigate("/");
     } else {
-      setUser(parsedUserData); // Set user data for admin panel
+      setUser(parsedUserData);
     }
   }, [navigate]);
 
   useEffect(() => {
     if (selectedMenuKey === "users" && users.length === 0) {
-      setLoading(true);
-      fetch("http://localhost:5000/api/users")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch users.");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setUsers(data);
-          setFilteredUsers(data);
-          setError(null);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
+      fetchUsers();
     }
   }, [selectedMenuKey, users.length]);
 
+  const fetchUsers = () => {
+    setLoading(true);
+    fetch("http://localhost:4000/api/users")
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers(data);
+        setFilteredUsers(data);
+        setError(null);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError("Error fetching users");
+        setLoading(false);
+      });
+  };
+
   const handleLogout = () => {
-    // Remove token and user data from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/"); // Redirect to home after logout
+    navigate("/");
   };
 
   const handleSearch = (e) => {
@@ -81,16 +82,64 @@ const AdminPanel = () => {
     setFilteredUsers(filtered);
   };
 
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    form.setFieldsValue(user); // Populate form with existing user data
+    setIsEditModalVisible(true);
+  };
+
+  const handleDelete = (userId) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setLoading(true);
+      fetch(`http://localhost:4000/api/users/${userId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to delete user.");
+          }
+          // Remove the deleted user from the state
+          setUsers(users.filter((user) => user._id !== userId));
+          setFilteredUsers(filteredUsers.filter((user) => user._id !== userId));
+          setError(null);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    }
+  };
+
+  const handleUpdate = async (values) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/users/${editingUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) throw new Error("Failed to update user");
+
+      setIsEditModalVisible(false);
+      fetchUsers(); // Refresh users list
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider width={200} className="site-layout-background">
-      <Menu
+        <Menu
           mode="inline"
           selectedKeys={[selectedMenuKey]}
           onSelect={({ key }) => setSelectedMenuKey(key)}
           style={{ height: "100%", borderRight: 0 }}
         >
-          <Menu.Item key="1" icon={<DashboardOutlined />} >
+          <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
             Dashboard
           </Menu.Item>
           <Menu.Item key="users" icon={<UserOutlined />}>
@@ -99,72 +148,73 @@ const AdminPanel = () => {
           <Menu.Item key="addItem" icon={<AppstoreAddOutlined />}>
             Add Item
           </Menu.Item>
-          {/* Add more menu items here */}
         </Menu>
       </Sider>
 
-      <Layout style={{ padding: "0 0px 24px" }}>
-      <Header
-          style={{
-            padding: 5,
-            background: "#0101",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ fontSize: "20px", fontWeight: "bold" }}>  Admin Panel  </div>
-          <div style={{ display: "flex", alignItems: "center" }}></div>
-          <div>
-            <Avatar icon={<UserOutlined />} style={{ marginRight: "8px" }} />
-            {user && <span>Welcome, {user.fullName}   </span>}
-            <Button onClick={handleLogout}>Logout</Button>
-          </div>
-        </Header>
+      <Layout style={{ padding: "0 24px 24px" }}>
+        <HeaderSection user={user} onLogout={handleLogout} />
+
         <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>
           {selectedMenuKey === "users" ? (
-            <div>
-              <h2>User Management</h2>
-              <Input
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={handleSearch}
-                style={{ marginBottom: "20px", width: "300px" }}
-              />
-              {loading ? (
-                <p>Loading users...</p>
-              ) : error ? (
-                <p style={{ color: "red" }}>{error}</p>
-              ) : (
-                <ul style={{ listStyleType: "none", padding: 0 }}>
-                  {filteredUsers.map((user) => (
-                    <li
-                      key={user._id}
-                      style={{
-                        margin: "10px 0",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <strong>Name:</strong> {user.fullName || "N/A"} <br />
-                      <strong>Grade:</strong> {user.grade || "N/A"} <br />
-                      <strong>Birth Date:</strong> {user.birthDate || "N/A"} <br />
-                      <strong>Gender:</strong> {user.gender || "N/A"} <br />
-                      <strong>School:</strong> {user.schoolName || "N/A"} <br />
-                      <strong>Address:</strong> {user.address || "N/A"} <br />
-                      <strong>Parent's M.No:</strong> {user.parentMobile || "N/A"} <br />
-                      <strong>Email:</strong> {user.email || "N/A"} <br />
-                      <strong>Role:</strong> {user.role || "N/A"}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <UserList
+              users={filteredUsers}
+              searchQuery={searchQuery}
+              loading={loading}
+              error={error}
+              onSearch={handleSearch}
+              onEdit={handleEdit}
+              onDelete={handleDelete} // Pass the handleDelete function as a prop
+            />
           ) : (
             <h2>Welcome to the Admin Panel</h2>
           )}
         </Content>
       </Layout>
+
+      {/* Edit User Modal */}
+      <Modal
+        title="Edit User"
+        open={isEditModalVisible}
+        onCancel={() => setIsEditModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Save Changes
+          </Button>,
+        ]}
+      >
+        <Form form={form} layout="vertical" onFinish={handleUpdate}>
+          <Form.Item name="fullName" label="Name" rules={[{ required: true, message: "Please enter name" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="grade" label="Grade" rules={[{ required: true, message: "Please enter grade" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="birthDate" label="Birth Date" rules={[{ required: true, type:"date", message: "Please enter birth date" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="gender" label="Gender" rules={[{ required: true, message: "Please enter your Gender" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="schoolName" label="School" rules={[{ required: true, message: "Please enter School" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="address" label="Address" rules={[{ required: true, message: "Please enter Address" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="parentMobile" label="Parent Mobile" rules={[{ required: true, message: "Please enter Parent Mobile" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="email" label="Email" rules={[{ required: true, type: "email", message: "Enter valid email" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="role" label="Role" rules={[{ required: true, message: "Please enter Role" }]}>
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 };

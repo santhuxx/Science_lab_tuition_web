@@ -49,16 +49,36 @@ const NavBar = () => {
     navigate("/"); // Redirect to home after logout
   };
 
+  const getSelectedKey = () => {
+    if (location.pathname.includes("/tutorials")) return "tutorials";
+    if (location.pathname.includes("/practicals")) return "practicals";
+    if (location.pathname.includes("/lessons")) return "lessons";
+    if (location.pathname.includes("/about")) return "about";
+    if (location.pathname.includes("/contact")) return "contact";
+    return "home"; // Default to home if no match
+  };
+
   return (
-    <Header style={{ display: "flex", justifyContent: "space-between" }}>
+    <Header style={{
+      position: "fixed", // fixes top spacing
+      top: 0,
+      left: 0,
+      width: "100%",
+      zIndex: 1000,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)", // Optional shadow for depth
+      backgroundColor: "#001529", // Keep original color from Ant Design
+    }}>
       <div style={{ color: "white", fontSize: "20px" }}>Science Lab</div>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["home"]}>
-        <Menu.Item key="home">Home</Menu.Item>
-        <Menu.Item key="tutorials">Tutorials</Menu.Item>
-        <Menu.Item key="practicals">Practicals</Menu.Item>
-        <Menu.Item key="lessons">Lessons</Menu.Item>
-        <Menu.Item key="about">About Us</Menu.Item>
-        <Menu.Item key="contact">Contact Us</Menu.Item>
+      <Menu theme="dark" mode="horizontal" selectedKeys={[getSelectedKey()]}>
+        <Menu.Item key="home" onClick={() => navigate("/home2")}>Home</Menu.Item>
+        <Menu.Item key="tutorials" onClick={() => navigate("/tutorials")}>Tutorials</Menu.Item>
+        <Menu.Item key="practicals" onClick={() => navigate("/practicals")}>Practicals</Menu.Item>
+        <Menu.Item key="lessons" onClick={() => navigate("/lessons")}>Lessons</Menu.Item>
+        <Menu.Item key="about" onClick={() => navigate("/about")}>About Us</Menu.Item>
+        <Menu.Item key="contact" onClick={() => navigate("/contact")}>Contact Us</Menu.Item>
       </Menu>
       <div style={{ display: "flex", alignItems: "center" }}>
         {isLoggedIn ? (

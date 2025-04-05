@@ -62,7 +62,6 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavBar />
       <div style={backgroundStyle}>
         <div style={overlayStyle}></div>
         <div style={contentStyle}>

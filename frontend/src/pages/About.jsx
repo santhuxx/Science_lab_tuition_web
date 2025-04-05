@@ -4,7 +4,6 @@ import NavBar from "../components/NavBar";
 const About = () => {
   return (
     <div className="tutorials-container">
-        <NavBar />
         <div style={{ padding: "20px" }}>
         
             <h1>Tutorials Page</h1>

@@ -74,7 +74,6 @@ const Lessons = () => {
 
   return (
     <div>
-      <NavBar />
         
     <div style={pageStyle}>
       <div style={overlayStyle}></div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Layout, Button, Avatar } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons"; // Import the account icon
 import LoginPopup from "./LoginPopup";
 import SignupPopup from "./SignupPopup";
@@ -11,19 +11,22 @@ const NavBar = () => {
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isSignupVisible, setIsSignupVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // To get the current location
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null); // Store user data (optional)
 
   useEffect(() => {
-    // Check if the user is logged in by verifying the token
+    // Check if the user is logged in by verifying the token in localStorage
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token); // Set state to true if token exists
-    if (token) {
-      // Optionally, fetch user details here if needed
-      const userData = JSON.parse(localStorage.getItem("user"));
-      setUser(userData); // Store the user data in state
+    const userData = localStorage.getItem("user");
+    if (token && userData) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(userData)); // Parse user data if available
+    } else {
+      setIsLoggedIn(false);
+      setUser(null);
     }
-  }, []);
+  }, [localStorage.getItem("token"), localStorage.getItem("user")]); // Dependency on localStorage change
 
   const showLoginPopup = () => {
     setIsLoginVisible(true);
@@ -49,7 +52,9 @@ const NavBar = () => {
     navigate("/"); // Redirect to home after logout
   };
 
+  // Determine the selected key based on the current location
   const getSelectedKey = () => {
+    if (location.pathname.includes("/admin")) return "admin"; // Highlight the Admin Page if on the /admin route
     if (location.pathname.includes("/tutorials")) return "tutorials";
     if (location.pathname.includes("/practicals")) return "practicals";
     if (location.pathname.includes("/lessons")) return "lessons";
@@ -73,6 +78,9 @@ const NavBar = () => {
     }}>
       <div style={{ color: "white", fontSize: "20px" }}>Science Lab</div>
       <Menu theme="dark" mode="horizontal" selectedKeys={[getSelectedKey()]}>
+        {isLoggedIn && user?.role === "teacher" && (
+          <Menu.Item key="admin" onClick={() => navigate("/admin")}>Admin Page</Menu.Item>
+        )}
         <Menu.Item key="home" onClick={() => navigate("/home2")}>Home</Menu.Item>
         <Menu.Item key="tutorials" onClick={() => navigate("/tutorials")}>Tutorials</Menu.Item>
         <Menu.Item key="practicals" onClick={() => navigate("/practicals")}>Practicals</Menu.Item>

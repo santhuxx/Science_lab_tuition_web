@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import { Card } from "antd";
 import backgroundImage from "../assets/back.jpg"; // Adjust path if necessary
+import Footer from "../components/Footer";
 
 const Tutorials = () => {
   const navigate = useNavigate();
@@ -43,10 +44,10 @@ const Tutorials = () => {
   const contentStyle = {
     position: "relative",
     zIndex: 2,
-    paddingTop: "40px", // Additional padding for navbar
-    paddingLeft: "20px",
-    paddingRight: "20px",
-    paddingBottom: "50px",
+    paddingTop: "100px", // Additional padding for navbar
+    paddingLeft: "60px",
+    paddingRight: "60px",
+    paddingBottom: "60px",
     textshadow: "2px 2px 4px rgba(0, 0, 0, 1)",
   };
 
@@ -54,14 +55,15 @@ const Tutorials = () => {
     paddingTop: "50px", // Added padding between navbar and cards
     display: "flex",
     justifyContent: "center",
-    gap: "20px",
+    gap: "30px",
     flexWrap: "wrap",
     marginTop: "20px",
     zIndex: 2,
   };
 
   const cardStyle = {
-    width: 220,
+    width: 250,
+    minHeight: 180,
     cursor: "pointer",
     backgroundColor: "#fff",
     color: "#000",
@@ -72,7 +74,7 @@ const Tutorials = () => {
 
   return (
     <div>
-      <NavBar />
+        
     <div style={pageStyle}>
       <div style={overlayStyle}></div>
       
@@ -95,8 +97,11 @@ const Tutorials = () => {
           ))}
         </div>
       </div>
+      
     </div>
+        <Footer />
     </div>
+    
   );
 };
 

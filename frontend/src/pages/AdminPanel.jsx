@@ -65,11 +65,6 @@ const AdminPanel = () => {
       });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -131,7 +126,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh", paddingTop: "64px" }}>
       <Sider width={200} className="site-layout-background">
         <Menu
           mode="inline"
@@ -152,7 +147,7 @@ const AdminPanel = () => {
       </Sider>
 
       <Layout style={{ padding: "0 24px 24px" }}>
-        <HeaderSection user={user} onLogout={handleLogout} />
+    
 
         <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>
           {selectedMenuKey === "users" ? (

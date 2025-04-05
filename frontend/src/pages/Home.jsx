@@ -17,7 +17,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <NavBar />
       <div className="background">
         <div className="overlay"></div>
         <div className="content">

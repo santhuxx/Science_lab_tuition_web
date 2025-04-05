@@ -55,7 +55,7 @@ const HomePage = () => {
     position: "relative",
     zIndex: 2,
     textAlign: "center",
-    paddingTop: "50px",
+    paddingTop: "100px",
     paddingLeft: "20px",
     paddingRight: "20px",
   };

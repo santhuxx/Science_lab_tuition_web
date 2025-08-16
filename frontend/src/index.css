@@ -67,3 +67,23 @@ html, body, #root {
 .nav-links a:hover {
   text-decoration: underline;
 }
+
+
+/* Show desktop menu only on larger screens */
+.desktop-menu {
+  display: flex;
+}
+
+.mobile-menu-button {
+  display: none;
+}
+
+/* On small screens, hide desktop menu and show hamburger */
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+  .mobile-menu-button {
+    display: block;
+  }
+}

@@ -12,7 +12,7 @@ const LoginPopup = ({ isVisible, onClose, onSignupClick }) => {
     setLoading(true);
     try {
       // Make the API call to login
-      const response = await axios.post("http://localhost:4000/api/auth/login", values);
+      const response = await axios.post("https://science-lab-tuition-web.vercel.app/api/auth/login", values);
       const { token, user } = response.data;
 
       // Store JWT and role in localStorage

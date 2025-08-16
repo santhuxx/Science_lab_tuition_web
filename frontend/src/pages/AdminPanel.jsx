@@ -51,7 +51,7 @@ const AdminPanel = () => {
 
   const fetchUsers = () => {
     setLoading(true);
-    fetch("http://localhost:4000/api/users")
+    fetch("https://science-lab-tuition-web.vercel.app/api/users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -86,7 +86,7 @@ const AdminPanel = () => {
   const handleDelete = (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       setLoading(true);
-      fetch(`http://localhost:4000/api/users/${userId}`, {
+      fetch(`https://science-lab-tuition-web.vercel.app/api/users/${userId}`, {
         method: "DELETE",
       })
         .then((response) => {
@@ -108,7 +108,7 @@ const AdminPanel = () => {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/users/${editingUser._id}`, {
+      const response = await fetch(`https://science-lab-tuition-web.vercel.app/users/${editingUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

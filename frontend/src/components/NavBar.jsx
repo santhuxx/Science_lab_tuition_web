@@ -78,14 +78,14 @@ const NavBar = () => {
 
   const menuItems = [
     ...(isLoggedIn && user?.role === "teacher"
-      ? [{ key: "admin", label: "Admin Page", onClick: () => { navigate("/admin"); toggleDrawer(); } }]
+      ? [{ key: "admin", label: "Admin Page", onClick: () => { navigate("/admin"); if (isMobile) toggleDrawer(); } }]
       : []),
-    { key: "home", label: "Home", onClick: () => { navigate("/home2"); toggleDrawer(); } },
-    { key: "tutorials", label: "Tutorials", onClick: () => { navigate("/tutorials"); toggleDrawer(); } },
-    { key: "practicals", label: "Practicals", onClick: () => { navigate("/practicals"); toggleDrawer(); } },
-    { key: "lessons", label: "Lessons", onClick: () => { navigate("/lessons"); toggleDrawer(); } },
-    { key: "about", label: "About Us", onClick: () => { navigate("/about"); toggleDrawer(); } },
-    { key: "contact", label: "Contact Us", onClick: () => { navigate("/contact"); toggleDrawer(); } },
+    { key: "home", label: "Home", onClick: () => { navigate("/home2"); if (isMobile) toggleDrawer(); } },
+    { key: "tutorials", label: "Tutorials", onClick: () => { navigate("/tutorials"); if (isMobile) toggleDrawer(); } },
+    { key: "practicals", label: "Practicals", onClick: () => { navigate("/practicals"); if (isMobile) toggleDrawer(); } },
+    { key: "lessons", label: "Lessons", onClick: () => { navigate("/lessons"); if (isMobile) toggleDrawer(); } },
+    { key: "about", label: "About Us", onClick: () => { navigate("/about"); if (isMobile) toggleDrawer(); } },
+    { key: "contact", label: "Contact Us", onClick: () => { navigate("/contact"); if (isMobile) toggleDrawer(); } },
   ];
 
   return (

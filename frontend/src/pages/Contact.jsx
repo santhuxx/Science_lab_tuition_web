@@ -2,7 +2,7 @@ import React from "react";
 import backgroundImage from "../assets/back.jpg"; // Adjust path if needed
 import Footer from "../components/Footer";
 
-const ContactUs = () => {
+const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
@@ -177,4 +177,4 @@ const styles = {
   },
 };
 
-export default ContactUs;
+export default Contact;

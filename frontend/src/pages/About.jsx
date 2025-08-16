@@ -2,7 +2,7 @@ import React from "react";
 import backgroundImage from "../assets/back.jpg"; // Update if needed
 import Footer from "../components/Footer";
 
-const AboutUs = () => {
+const About = () => {
   return (
     <div>
       <div style={styles.page}>
@@ -97,4 +97,4 @@ const styles = {
   },
 };
 
-export default AboutUs;
+export default About;

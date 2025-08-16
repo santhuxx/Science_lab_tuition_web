@@ -11,14 +11,23 @@ connectDB();
 
 const app = express();
 
+// CORS Options
+const corsOptions = {
+  origin: "http://localhost:5173", // frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // allow cookies if needed
+};
 
-// Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+
+// Handle preflight requests for all routes
+app.options("*", cors(corsOptions));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -25,11 +25,11 @@ const Contact = () => {
                 </p>
 
                 <p style={styles.paragraph}>
-                  <br /><br /><br />
+                  <br />
                   <strong>Mobile:</strong> 076 123 4567<br />
                   <strong>Email:</strong>{" "}
-                  <a href="mailto:mail@gmail.com" style={styles.emailLink}>
-                    mail@gmail.com
+                  <a href="mailto:karunajeewaattigala@gmail.com" style={styles.emailLink}>
+                  karunajeewaattigala@gmail.com
                   </a>
                 </p>
               </div>
@@ -93,36 +93,37 @@ const styles = {
   content: {
     position: "relative",
     zIndex: 2,
-    padding: "120px 20px",
+    padding: "80px 15px", // Reduced padding for mobile
     display: "flex",
     justifyContent: "center",
   },
   lightGrayBox: {
     backgroundColor: "#f0f0f0",
     borderRadius: "8px",
-    padding: "50px",
+    padding: "30px", // Reduced padding for mobile
     width: "100%",
     maxWidth: "1200px",
     display: "flex",
     flexDirection: "column",
-    gap: "40px",
+    gap: "30px",
   },
   topSection: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "40px",
+    gap: "20px", // Reduced gap for mobile
+    flexDirection: window.innerWidth <= 768 ? "column" : "row", // Stack vertically on mobile
   },
   left: {
-    flex: "1 1 400px",
+    flex: "1 1 300px", // Reduced min-width for better mobile fit
     color: "#333",
   },
   heading: {
-    fontSize: "30px",
-    marginBottom: "20px",
+    fontSize: window.innerWidth <= 768 ? "24px" : "30px", // Smaller font on mobile
+    marginBottom: "15px",
   },
   paragraph: {
-    fontSize: "17px",
-    lineHeight: "1.8",
+    fontSize: window.innerWidth <= 768 ? "15px" : "17px", // Smaller font on mobile
+    lineHeight: "1.6",
     color: "#444",
   },
   emailLink: {
@@ -130,41 +131,45 @@ const styles = {
     textDecoration: "underline",
   },
   form: {
-    flex: "1 1 400px",
+    flex: "1 1 300px", // Reduced min-width for better mobile fit
     display: "flex",
     flexDirection: "column",
-    gap: "15px",
+    gap: "12px", // Slightly reduced gap
   },
   input: {
-    padding: "12px",
-    fontSize: "15px",
+    padding: "10px",
+    fontSize: window.innerWidth <= 768 ? "14px" : "15px", // Smaller font on mobile
     borderRadius: "4px",
     border: "1px solid #ccc",
     backgroundColor: "#fff",
+    width: "100%", // Ensure inputs don't overflow
+    boxSizing: "border-box",
   },
   textarea: {
-    padding: "12px",
-    fontSize: "15px",
+    padding: "10px",
+    fontSize: window.innerWidth <= 768 ? "14px" : "15px", // Smaller font on mobile
     borderRadius: "4px",
     border: "1px solid #ccc",
     resize: "vertical",
     backgroundColor: "#fff",
+    width: "100%", // Ensure textarea doesn't overflow
+    boxSizing: "border-box",
   },
   button: {
-    padding: "14px",
+    padding: "12px",
     backgroundColor: "#001529",
     color: "#fff",
     fontWeight: "600",
-    fontSize: "14px",
+    fontSize: window.innerWidth <= 768 ? "13px" : "14px", // Smaller font on mobile
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
     letterSpacing: "2px",
   },
   note: {
-    fontSize: "12px",
+    fontSize: window.innerWidth <= 768 ? "11px" : "12px", // Smaller font on mobile
     color: "#777",
-    marginTop: "10px",
+    marginTop: "8px",
   },
   mapWrapper: {
     width: "100%",
@@ -172,7 +177,7 @@ const styles = {
   },
   map: {
     width: "100%",
-    height: "400px",
+    height: window.innerWidth <= 768 ? "300px" : "400px", // Smaller map height on mobile
     border: 0,
   },
 };

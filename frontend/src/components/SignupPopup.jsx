@@ -233,6 +233,7 @@ const SignupPopup = ({ isVisible, onClose }) => {
         .signup-modal {
           top: 10px !important;
         }
+
         .form-actions {
           display: flex;
           gap: 12px;
@@ -240,23 +241,37 @@ const SignupPopup = ({ isVisible, onClose }) => {
           justify-content: space-between;
           flex-wrap: wrap;
         }
+
         .form-actions button {
           flex: 1;
           min-width: 120px;
+          height: 40px;
+          font-size: 14px;
         }
+
         @media (max-width: 480px) {
           .signup-modal {
-            max-width: 100% !important;
-            margin: 0;
+            max-width: 95% !important;
+            margin: 0 auto;
           }
+
           .form-actions {
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: nowrap;
           }
+
           .form-actions button {
-            width: 100%;
+            flex: 1;
+            min-width: 100px;
+            max-width: 45%;
+            height: 36px;
+            font-size: 13px;
           }
         }
       `}</style>
+
+
     </Modal>
   );
 };

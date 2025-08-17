@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Menu, Layout, Button, Avatar, Drawer } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,6 +18,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Check localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -29,6 +31,7 @@ const NavBar = () => {
     }
   }, []);
 
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -37,6 +40,14 @@ const NavBar = () => {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Callback to update state after successful login
+  const handleLoginSuccess = (userData, token) => {
+    setIsLoggedIn(true);
+    setUser(userData);
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
 
   const showLoginPopup = () => {
     setIsLoginVisible(true);
@@ -102,7 +113,7 @@ const NavBar = () => {
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
         backgroundColor: "#001529",
         padding: isMobile ? "0 16px" : "0 24px",
-        minHeight: "64px", // Ensure consistent height for vertical centering
+        minHeight: "64px",
       }}
     >
       <div
@@ -166,8 +177,8 @@ const NavBar = () => {
         style={{
           color: "white",
           display: isMobile ? "flex" : "none",
-          marginLeft: "50px", // Big space from text
-          alignSelf: "center", // Vertically centers the icon in the Header
+          marginLeft: "50px",
+          alignSelf: "center",
         }}
       />
 
@@ -243,6 +254,7 @@ const NavBar = () => {
         isVisible={isLoginVisible}
         onClose={hideLoginPopup}
         onSignupClick={showSignupPopup}
+        onLoginSuccess={handleLoginSuccess} // Pass the callback
       />
       <SignupPopup isVisible={isSignupVisible} onClose={hideSignupPopup} />
     </Header>

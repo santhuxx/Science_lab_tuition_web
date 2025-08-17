@@ -3,7 +3,7 @@ import { Modal, Form, Input, Button, notification } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const LoginPopup = ({ isVisible, onClose, onSignupClick }) => {
+const LoginPopup = ({ isVisible, onClose, onSignupClick, onLoginSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -17,8 +17,12 @@ const LoginPopup = ({ isVisible, onClose, onSignupClick }) => {
       );
       const { token, user } = response.data;
 
+      // Update localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+
+      // Call the callback to update NavBar state
+      onLoginSuccess(user, token);
 
       notification.success({
         message: `Welcome back, ${user.fullName}!`,

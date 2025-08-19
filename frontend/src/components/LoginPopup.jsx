@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, notification } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -17,20 +18,12 @@ const LoginPopup = ({ isVisible, onClose, onSignupClick, onLoginSuccess }) => {
       );
       const { token, user } = response.data;
 
-      // Update localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // Call the callback to update NavBar state
       onLoginSuccess(user, token);
 
-      notification.success({
-        message: `Welcome back, ${user.fullName}!`,
-      });
-
-      if (user.role === "teacher") navigate("/admin");
-      else if (user.role === "student") navigate("/home2");
-
+      notification.success({ message: `Welcome back, ${user.fullName}!` });
+      navigate(user.role === "teacher" ? "/admin" : "/home2");
       onClose();
     } catch (error) {
       notification.error({
@@ -44,112 +37,106 @@ const LoginPopup = ({ isVisible, onClose, onSignupClick, onLoginSuccess }) => {
 
   return (
     <Modal
-      title={null}
       open={isVisible}
       onCancel={onClose}
       footer={null}
       centered
-      style={{ borderRadius: "16px", maxWidth: "450px", width: "95%" }}
-      bodyStyle={{ padding: "24px" }}
-      className="login-modal"
+      closable={false}
+      bodyStyle={{
+        padding: 0,
+        background: "transparent",
+        borderRadius: 16,
+        overflow: "hidden",
+      }}
+      style={{
+        backdropFilter: "blur(8px)",
+        backgroundColor: "rgba(0,0,0,0.2)",
+      }}
     >
-      <h2 style={{ textAlign: "center", fontWeight: 700, marginBottom: "24px" }}>
-        Login
-      </h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 40,
+          background: "rgba(255, 255, 255, 0.9)",
+          borderRadius: 16,
+          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
+          animation: "fadeIn 0.5s ease-in-out",
+          flexDirection: "column",
+        }}
+      >
+        <h2 style={{ marginBottom: 24, fontWeight: 700, fontSize: 24 }}>
+          Welcome Back 👋
+        </h2>
 
-      <Form form={form} layout="vertical" onFinish={handleLogin}>
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleLogin}
+          style={{ width: "100%", maxWidth: 350 }}
         >
-          <Input
-            placeholder="Enter your email"
-            style={{
-              borderRadius: "12px",
-              border: "none",
-              backgroundColor: "#f3f4f6",
-              padding: "10px 16px",
-              fontSize: "14px",
-            }}
-          />
-        </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: "Please enter your email" }]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              placeholder="Email"
+              size="large"
+              style={{
+                borderRadius: 12,
+                backgroundColor: "#f3f4f0",
+                padding: "10px 16px",
+              }}
+            />
+          </Form.Item>
 
-        <Form.Item
-          name="password"
-          label="Password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password
-            placeholder="Enter your password"
-            style={{
-              borderRadius: "12px",
-              border: "none",
-              backgroundColor: "#f3f4f6",
-              padding: "10px 16px",
-              fontSize: "14px",
-            }}
-          />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please enter your password" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+              size="large"
+              style={{
+                borderRadius: 12,
+                backgroundColor: "#f3f4f0",
+                padding: "10px 16px",
+              }}
+            />
+          </Form.Item>
 
-        <div className="form-actions">
           <Button
             type="primary"
             htmlType="submit"
             loading={loading}
+            size="large"
             style={{
-              borderRadius: "12px",
-              fontWeight: 500,
-              height: "42px",
-              fontSize: "14px",
+              width: "100%",
+              borderRadius: 12,
+              fontWeight: "bold",
+              marginTop: 8,
             }}
           >
             Login
           </Button>
+
           <Button
-            type="default"
+            type="link"
             onClick={onSignupClick}
             style={{
-              borderRadius: "12px",
+              marginTop: 16,
+              display: "block",
+              textAlign: "center",
               fontWeight: 500,
-              height: "42px",
-              fontSize: "14px",
-              backgroundColor: "#f3f4f6",
-              color: "#374151",
-              border: "none",
             }}
           >
-            Sign Up
+            Don't have an account? Sign up
           </Button>
-        </div>
-      </Form>
-
-      <style jsx>{`
-        .form-actions {
-          display: flex;
-          gap: 12px;
-          margin-top: 24px;
-          justify-content: flex-end;
-        }
-
-        @media (max-width: 480px) {
-          .login-modal {
-            max-width: 95% !important;
-            margin: 0 auto;
-          }
-          .form-actions {
-            flex-direction: row;
-            justify-content: space-between;
-            flex-wrap: nowrap;
-          }
-          .form-actions button {
-            flex: 1;
-            min-width: 45%;
-            height: 40px;
-            font-size: 13px;
-          }
-        }
-      `}</style>
+        </Form>
+      </div>
     </Modal>
   );
 };

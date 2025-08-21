@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Card, Row, Col } from "antd";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -15,29 +15,6 @@ import backgroundImage from "../assets/back.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      try {
-        const decoded = jwtDecode(token); // Decode JWT token
-        console.log("Decoded Token:", decoded); // ✅ Debugging - Check token structure
-
-        if (decoded.fullName) {
-          setUser(decoded);
-        } else {
-          console.warn("Token does not contain fullName.");
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Invalid token:", error);
-        localStorage.removeItem("token"); // Remove invalid token
-        setUser(null);
-      }
-    }
-  }, []);
 
   const styles = {
     page: {
@@ -217,13 +194,8 @@ const Home = () => {
         <div style={styles.content}>
           {/* Hero Section */}
           <div style={styles.heroSection}>
-
-            {user ? (
-              <h1 style={styles.heroTitle}>Welcome back, {user.fullName}!</h1>
-            ):(
-              <h2 style={styles.heroSubtitle}>Welcome to Science Lab<br/>Excellence in Science Education</h2>
-            )}
-            
+            <h1 style={styles.heroTitle}>Welcome to Science Lab</h1>
+            <h2 style={styles.heroSubtitle}>Excellence in Science Education</h2>
             <p style={styles.heroDescription}>
               Join thousands of students who have achieved academic success with our expert-led science tuition for grades 6-11. 
               Master complex concepts through our innovative teaching methods.
